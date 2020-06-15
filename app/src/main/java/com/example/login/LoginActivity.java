@@ -42,10 +42,10 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //EditText에 현재 입력되어 있는 값을 get해 온다.
-                String userID= et_id.getText().toString();
-                String userPass= et_pass.getText().toString();
+                final String userID= et_id.getText().toString();
+                final String userPass= et_pass.getText().toString();
                 //
-                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                final Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
@@ -53,12 +53,13 @@ public class LoginActivity extends AppCompatActivity {
                             //php의 success를 보고 성공했는지 확인
                             boolean success = jsonObject.getBoolean("success");
                             if (success) { //로그인등록에 성공한 경우
-                                String userID = jsonObject.getString("userID");
-                                String userPass = jsonObject.getString("userPassword");
+                                String userName = jsonObject.getString("userName");
+                                String userNumber = jsonObject.getString("userNumber");
+
                                 Toast.makeText(getApplicationContext(), "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(LoginActivity.this, RentActivity.class);
-                                intent.putExtra("userID", userID);
-                                intent.putExtra("userPass", userPass);
+                                intent.putExtra("userName", userName);
+                                intent.putExtra("userNumber", userNumber);
                                 startActivity(intent);
                             } else { // 로그인등록에 실패한 경우
                                 Toast.makeText(getApplicationContext(), "로그인에 실패하였습니다.", Toast.LENGTH_SHORT).show();
@@ -69,9 +70,14 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 };
-                LoginRequest loginRequest = new LoginRequest(userID, userPass, responseListener);
-                RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
-                queue.add(loginRequest);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        LoginRequest loginRequest = new LoginRequest(userID, userPass, responseListener);
+                        RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
+                        queue.add(loginRequest);
+                    }
+                }).start();
             }
         });
     }

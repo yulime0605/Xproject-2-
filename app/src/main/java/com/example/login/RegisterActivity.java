@@ -15,6 +15,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import android.os.AsyncTask;
 
 public class RegisterActivity extends AppCompatActivity {
     private EditText et_id, et_pass, et_name, et_number, et_email;
@@ -73,3 +74,4 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 }
+
