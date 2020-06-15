@@ -51,25 +51,26 @@ public class RentActivity extends AppCompatActivity implements View.OnClickListe
     }
     @Override
     protected  void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         final IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             if (result.getContents() != null) {
                 final String bikeNumber = result.getContents();
                 Log.d(TAG,"자전거" + bikeNumber);
-                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                final Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            Log.d(TAG,"야뭔데");
+                            Log.d(TAG,"서버 접속에 성공했음!");
 
                             JSONObject jsonObject = new JSONObject(response);
                             //php의 success를 보고 성공했는지 확인
                             boolean success = jsonObject.getBoolean("success");
                             if (success) { //자전거등록에 성공한 경우
-                                Log.d(TAG,"야뭐야");
+                                Log.d(TAG,"성공했음!");
                                 Toast.makeText(getApplicationContext(), "자전거" + bikeNumber +"잠금이 헤제되었습니다.", Toast.LENGTH_SHORT).show();
                             } else { // 자전거등록에 실패한 경우
-                                Log.d(TAG,"야어디야");
+                                Log.d(TAG,"실패했음!");
                                 Toast.makeText(getApplicationContext(), "다른 사용자가 사용중인 자전거입니다.", Toast.LENGTH_SHORT).show();
                                 return;
                             }
@@ -78,9 +79,14 @@ public class RentActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     }
                 };
-                RentRequest rentRequest = new RentRequest(userName, userNumber, bikeNumber, responseListener);
-                RequestQueue queue = Volley.newRequestQueue(RentActivity.this);
-                queue.add(rentRequest);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        RentRequest rentRequest = new RentRequest(userName, userNumber, bikeNumber, responseListener);
+                        RequestQueue queue = Volley.newRequestQueue(RentActivity.this);
+                        queue.add(rentRequest);
+                    }
+                }).start();
 
 
             } else {
@@ -106,7 +112,7 @@ public class RentActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         } else {
-            super.onActivityResult(requestCode, resultCode, data);
+
         }
     }
 }
