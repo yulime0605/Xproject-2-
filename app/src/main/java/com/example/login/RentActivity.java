@@ -24,7 +24,6 @@ public class RentActivity extends AppCompatActivity implements View.OnClickListe
     Button scanBtn;
     private static final String TAG = "RentActivity";
     String userName, userNumber;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,21 +55,23 @@ public class RentActivity extends AppCompatActivity implements View.OnClickListe
         if (result != null) {
             if (result.getContents() != null) {
                 final String bikeNumber = result.getContents();
-                Log.d(TAG,"자전거" + bikeNumber);
-                final Response.Listener<String> responseListener = new Response.Listener<String>() {
+                Log.d(TAG, "자전거" + bikeNumber);
+                final Response.Listener<String> responseListener;
+                responseListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            Log.d(TAG,"서버 접속에 성공했음!");
+                            //Log.d(TAG, "야뭔데");
 
                             JSONObject jsonObject = new JSONObject(response);
                             //php의 success를 보고 성공했는지 확인
                             boolean success = jsonObject.getBoolean("success");
+                            //String bikeNumber = jsonObject.getString("bikeNumber");
                             if (success) { //자전거등록에 성공한 경우
-                                Log.d(TAG,"성공했음!");
-                                Toast.makeText(getApplicationContext(), "자전거" + bikeNumber +"잠금이 헤제되었습니다.", Toast.LENGTH_SHORT).show();
+                                //Log.d(TAG, "야뭐야");
+                                Toast.makeText(getApplicationContext(), "자전거 잠금이 헤제되었습니다.", Toast.LENGTH_SHORT).show();
                             } else { // 자전거등록에 실패한 경우
-                                Log.d(TAG,"실패했음!");
+                                //Log.d(TAG, "야어디야");
                                 Toast.makeText(getApplicationContext(), "다른 사용자가 사용중인 자전거입니다.", Toast.LENGTH_SHORT).show();
                                 return;
                             }
@@ -87,32 +88,32 @@ public class RentActivity extends AppCompatActivity implements View.OnClickListe
                         queue.add(rentRequest);
                     }
                 }).start();
-
-
-            } else {
-                Log.d(TAG,"!!!!!!!!!!!");
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("no result");
-                builder.setTitle("Scanning Result");
-                builder.setPositiveButton("Scan Again", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        scanCode();
-                    }
-                }).setNegativeButton("finish", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                Toast.makeText(this, "No Results", Toast.LENGTH_LONG).show();
             }
 
-        } else {
 
+        } else {
+            Log.d(TAG, "!!!!!!!!!!!");
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("no result");
+            builder.setTitle("Scanning Result");
+            builder.setPositiveButton("Scan Again", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    scanCode();
+                }
+            }).setNegativeButton("finish", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    finish();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            Toast.makeText(this, "No Results", Toast.LENGTH_LONG).show();
         }
+//        } else {
+//            super.onActivityResult(requestCode, resultCode, data);
+//        }
     }
 }
