@@ -70,6 +70,8 @@ public class RentActivity extends AppCompatActivity implements View.OnClickListe
                             if (success) { //자전거등록에 성공한 경우
                                 //Log.d(TAG, "야뭐야");
                                 Toast.makeText(getApplicationContext(), "자전거 잠금이 헤제되었습니다.", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(RentActivity.this, TimerActivity.class);
+                                startActivity(intent);
                             } else { // 자전거등록에 실패한 경우
                                 //Log.d(TAG, "야어디야");
                                 Toast.makeText(getApplicationContext(), "다른 사용자가 사용중인 자전거입니다.", Toast.LENGTH_SHORT).show();
