@@ -35,6 +35,7 @@ public class RentActivity extends AppCompatActivity implements View.OnClickListe
         userName = intent.getStringExtra("userName");
         userNumber = intent.getStringExtra("userNumber");
 
+
     }
 
     @Override
@@ -56,8 +57,7 @@ public class RentActivity extends AppCompatActivity implements View.OnClickListe
             if (result.getContents() != null) {
                 final String bikeNumber = result.getContents();
                 Log.d(TAG, "자전거" + bikeNumber);
-                final Response.Listener<String> responseListener;
-                responseListener = new Response.Listener<String>() {
+                final Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
@@ -65,11 +65,15 @@ public class RentActivity extends AppCompatActivity implements View.OnClickListe
 
                             JSONObject jsonObject = new JSONObject(response);
                             //php의 success를 보고 성공했는지 확인
-                            boolean success = jsonObject.getBoolean("success");
+                            boolean rent_success = jsonObject.getBoolean("rent_success");
                             //String bikeNumber = jsonObject.getString("bikeNumber");
-                            if (success) { //자전거등록에 성공한 경우
+                            if (rent_success) { //자전거등록에 성공한 경우
                                 //Log.d(TAG, "야뭐야");
                                 Toast.makeText(getApplicationContext(), "자전거 잠금이 헤제되었습니다.", Toast.LENGTH_SHORT).show();
+                                Intent intent1 = new Intent(RentActivity.this, TimerActivity.class);
+                                intent1.putExtra("userNumber", userNumber);
+                                System.out.println("test2"+userNumber);
+                                startActivity(intent1);
                             } else { // 자전거등록에 실패한 경우
                                 //Log.d(TAG, "야어디야");
                                 Toast.makeText(getApplicationContext(), "다른 사용자가 사용중인 자전거입니다.", Toast.LENGTH_SHORT).show();
